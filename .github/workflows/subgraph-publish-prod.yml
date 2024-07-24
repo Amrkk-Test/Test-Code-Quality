@@ -1,0 +1,20 @@
+name: subgraph-publish-prod
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  schema-check:
+    uses: triplelift-internal/shared-gha/.github/workflows/subgraph-publish.yml@main
+    # remove this condition to enable the workflow
+    if: false
+    with:
+      application: test-code-quality-tools-api
+      environment: prod
+      routing_url: https://test-code-quality-tools-api.prod.triplelift.net/graphql
+    secrets:
+      APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+      APOLLO_GRAPH_REF:  ${{ secrets.APOLLO_GRAPH_REF_PROD }}
+      GITHUB_SHA: ${{ github.event.pull_request.head.sha }}

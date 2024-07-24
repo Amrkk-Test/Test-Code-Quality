@@ -1,0 +1,11 @@
+type Query {
+    # Get a TripleLift Greeting.
+    greeting(
+        id: BigInteger!
+    ): Greeting!
+
+    # Get a set of TripleLift Greetings based on a filter.
+    greetings(
+        filter: GreetingsFilter
+    ): [Greeting!]
+}

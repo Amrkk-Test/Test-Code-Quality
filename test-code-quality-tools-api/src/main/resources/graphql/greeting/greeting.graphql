@@ -1,0 +1,13 @@
+type Greeting {
+    id: BigInteger!
+    message: String
+}
+
+input GreetingInput {
+    id: BigInteger!
+    greeting: String!
+}
+
+input GreetingsFilter{
+    ids: [BigInteger!]
+}

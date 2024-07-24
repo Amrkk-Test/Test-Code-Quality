@@ -1,0 +1,52 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="
+            http://www.ehcache.org/v3
+            http://www.ehcache.org/schema/ehcache-core-3.8.xsd">
+
+    <!-- Default cache template -->
+    <cache-template name="default">
+
+        <expiry>
+            <ttl unit="minutes">5</ttl>
+        </expiry>
+
+        <listeners>
+            <listener>
+                <class>com.triplelift.test_code_quality_tools_api.cache.CacheLogger</class>
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+                <events-to-fire-on>EVICTED</events-to-fire-on>
+                <events-to-fire-on>REMOVED</events-to-fire-on>
+                <events-to-fire-on>UPDATED</events-to-fire-on>
+            </listener>
+        </listeners>
+
+        <!-- Use smaller amounts of resources for local testing -->
+        <resources>
+            <heap>1</heap>
+            <offheap unit="MB">16</offheap>
+            <disk unit="MB">32</disk>
+        </resources>
+    </cache-template>
+
+    <cache-template name="inMemoryCache">
+
+        <expiry>
+            <ttl unit="minutes">1</ttl>
+        </expiry>
+
+        <resources>
+            <heap>150</heap> <!-- This is the amount of objects to be stored in memory -->
+        </resources>
+    </cache-template>
+
+    <cache alias="greeting_cache" uses-template="inMemoryCache">
+        <key-type>java.lang.String</key-type>
+        <value-type>com.triplelift.test_code_quality_tools_api.greeting.Greeting</value-type>
+    </cache>
+
+</config>

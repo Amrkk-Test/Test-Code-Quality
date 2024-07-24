@@ -1,0 +1,30 @@
+name: 'ESLinter Check'
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  linter:
+    name: 'Run ESLinter check'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
+      - name: Set up JDK
+        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b
+        with:
+          distribution: 'corretto'
+          java-version: 19
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef
+      - name: Install ESLint
+        run: |
+          npm i -D @graphql-eslint/eslint-plugin
+          npm install --save-dev eslint
+      - name: Run Linter check
+        run: npx eslint test-code-quality-tools-api/src/main/resources/graphql/**
+      - name: Cleanup Gradle Cache
+        uses: ./.github/actions/gradle-cleanup

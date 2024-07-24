@@ -1,0 +1,25 @@
+name: 'Main Branch Creation'
+
+on:
+  push:
+    branches:
+      - 'develop'
+
+
+jobs:
+  branchCreation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Main Branch Creation
+        uses: peterjgrainger/action-create-branch@v2.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: 'main'
+
+      - name: Disable this workflow
+        shell: bash
+        run: |
+          gh workflow disable -R $GITHUB_REPOSITORY "${{ github.workflow }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

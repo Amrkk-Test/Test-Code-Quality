@@ -1,0 +1,26 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+    },
+    "overrides": [
+        {
+            "files": ["*.graphql"],
+            "parser": "@graphql-eslint/eslint-plugin",
+            "plugins": ["@graphql-eslint"],
+            "rules": {
+                "@graphql-eslint/known-type-names": "error"
+            },
+
+            "parserOptions": {
+            "schema": "./test-code-quality-tools-api/src/main/resources/graphql/**/*.graphql"
+            }
+        }
+    ]
+}

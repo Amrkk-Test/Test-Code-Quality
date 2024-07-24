@@ -1,0 +1,76 @@
+name: "Publish new release"
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  release:
+    name: Publish new release
+    runs-on: ubuntu-latest
+    # only merged pull requests must trigger this job
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: Get version
+        id: rawVersion
+        run: |
+          VERSION=$(awk -F= '$1=="applicationVersion"{print $2}' gradle.properties)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Get last version and calculate next version
+        id: versioning
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const version = "${{ steps.rawVersion.outputs.version }}";
+            core.setOutput('version', version);
+            if (!version.match(/^\d+\.\d+\.\d+$/)) {
+              core.setFailed("Version must follow form x.y.z");
+            }
+            const pieces = version.split(".");
+            // naive: bump the 'patch' component
+            const nextVersion = pieces[0] + "." + pieces[1] + "." + (parseInt(pieces[2]) + 1) + "-SNAPSHOT";
+            core.setOutput('nextVersion', nextVersion);
+      - name: Create Release ${{ steps.versioning.outputs.version }}
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GH_ORG_TOKEN }}
+          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+          tag_name: ${{ steps.versioning.outputs.version }}
+          name: ${{ steps.versioning.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+      - name: Set next version ${{ steps.versioning.outputs.nextVersion }}
+        id: make-commit
+        run: |
+          # set generic committer info
+          git config user.name "TripleLift Deployer"
+          git config user.email "tldeployer@users.noreply.github.com"
+          # checkout the new branch
+          git checkout -b main-to-develop/${{ steps.versioning.outputs.version }}
+          # set the snapshot version here
+          sed -i -e "/applicationVersion=/ s/=.*/=${{ steps.versioning.outputs.nextVersion }}/" gradle.properties
+          # commit the change
+          git commit -a -m "[automated] Prepare to start development of ${{ steps.versioning.outputs.nextVersion }}"
+          echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          # push
+          git push origin main-to-develop/${{ steps.versioning.outputs.version }}
+      - name: Create pull request
+        uses: thomaseizinger/create-pull-request@1.2.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ORG_TOKEN }}
+        with:
+          head: main-to-develop/${{ steps.versioning.outputs.version }}
+          base: develop
+          labels: Automation, Flow
+          title: "Automation: Merge main (${{ steps.versioning.outputs.version }}) into develop"
+          reviewers: ${{ github.actor }}
+          body: |
+            This PR merges the main branch back into the develop branch.
+            It also naively bumps the version in preparation for the next release.

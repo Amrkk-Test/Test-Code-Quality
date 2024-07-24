@@ -1,0 +1,3 @@
+rootProject.name = 'test-code-quality-tools-api'
+include 'test-code-quality-tools-api'
+

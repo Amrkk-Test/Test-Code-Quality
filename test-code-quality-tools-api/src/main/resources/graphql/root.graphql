@@ -1,0 +1,17 @@
+# Java-specific scalars (no further coding or configuration required).
+scalar BigDecimal
+scalar BigInteger
+scalar Byte
+scalar Char
+scalar Short
+scalar Long
+
+# ISO 8601 Date format 'yyyy-MM-dd'.
+scalar Date
+
+# An RFC-3339 compliant date time like '2020-03-12T16:00:00Z'.
+scalar DateTime
+
+# This declares the Size directive as being possible on arguments and input fields.
+directive @Size(min : Int = 0, max : Int = 2147483647, message : String = "graphql.validation.Size.message")
+on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION

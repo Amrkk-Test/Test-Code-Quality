@@ -1,0 +1,36 @@
+name: Run Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - '*'
+      - '!main'
+  push:
+    branches:
+      - develop
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
+      - uses: gradle/wrapper-validation-action@55e685c48d84285a5b0418cd094606e199cca3b6
+      - name: Setup JDK
+        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b
+        with:
+          distribution: 'corretto'
+          java-version: 19
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef
+      - name: Run Unit Test Suite
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ORG_TOKEN }}
+        run: |
+          ./gradlew test
+      - name : Publish Code Coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageLocations: "**/build/reports/jacoco/test/jacocoTestReportFixed.xml:jacoco"

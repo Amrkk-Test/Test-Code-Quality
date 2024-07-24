@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: test-code-quality-tools-api-graphql
+  title: Test Code Quality Tools API GraphQL
+  description: GraphQL API endpoints that are offered by the Test Code Quality Tools API service
+  tags:
+    - graphql
+spec:
+  type: graphql
+  lifecycle: experimental
+  owner: group:default/enterprise-apps

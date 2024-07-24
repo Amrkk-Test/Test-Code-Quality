@@ -1,0 +1,17 @@
+name: subgraph-check-prod
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  schema-check:
+    uses: triplelift-internal/shared-gha/.github/workflows/subgraph-check.yml@main
+    with:
+      application: test-code-quality-tools-api
+      environment: production
+    secrets:
+      APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+      APOLLO_GRAPH_REF:  ${{ secrets.APOLLO_GRAPH_REF_PROD }}
+      GITHUB_SHA: ${{ github.event.pull_request.head.sha }}

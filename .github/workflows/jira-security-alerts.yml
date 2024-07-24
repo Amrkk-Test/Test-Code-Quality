@@ -1,0 +1,25 @@
+name: GitHub Security Alerts for Jira
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  syncSecurityAlerts:
+    # This job runs on the latest version of Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Sync security alerts to Jira issues"
+        # This step uses the 'github-security-jira' action found at https://github.com/reload/github-security-jira
+        uses: triplelift-internal/ghas-jira-integration@v1.2.4-tl
+
+        with:
+          jira_url: ${{ secrets.JIRA_HOST }}
+          jira_user: ${{ secrets.JIRA_USER }}
+          jira_token: ${{ secrets.JIRA_TOKEN }}
+          jira_project: EA
+          jira_labels: 'security'
+          github_token: ${{ secrets.GH_ORG_TOKEN }}
+          sync_direction: 'gh2jira'

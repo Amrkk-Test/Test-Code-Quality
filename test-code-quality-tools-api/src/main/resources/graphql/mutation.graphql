@@ -1,0 +1,13 @@
+type Mutation {
+    createGreeting(
+        message: String!
+    ): Greeting!
+
+    updateGreeting(
+        greetingInput: GreetingInput!
+    ): Greeting!
+
+    deleteGreeting(
+        id: BigInteger!
+    ): String!
+}

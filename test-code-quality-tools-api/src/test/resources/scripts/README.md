@@ -1,0 +1,1 @@
+This seed data is used by the BDD tests.

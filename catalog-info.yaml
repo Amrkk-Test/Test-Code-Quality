@@ -1,0 +1,40 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-code-quality-tools-api
+  title: Test Code Quality Tools API
+  links:
+    - url: https://github.com/triplelift-internal/test-code-quality-tools-api/tree/master/#readme
+      title: Repository README
+    - url: https://nomad-development.us-east-1.triplelift.net/ui/jobs/test-code-quality-tools-api
+      title: Nomad UI Jobs DEV Link
+    - url: https://test-code-quality-tools-api.dev.triplelift.net/
+      title: Nomad hosted instance DEV URL
+    - url: https://test-code-quality-tools-api.dev.triplelift.net/graphiql
+      title: DEV GraphiQL Link
+    - url: https://test-code-quality-tools-api.dev.triplelift.net/health
+      title: DEV Health Check Link
+    - url: https://nomad-development.us-east-1.triplelift.net/ui/jobs/test-code-quality-tools-api
+      title: Nomad UI Jobs PROD Link
+    - url: https://test-code-quality-tools-api.prod.triplelift.net/
+      title: Nomad hosted instance PROD URL
+    - url: https://test-code-quality-tools-api.prod.triplelift.net/graphiql
+      title: PROD GraphiQL Link
+    - url: https://test-code-quality-tools-api.prod.triplelift.net/health
+      title: PROD Health Check Link
+
+  description: Test API to explore code quality tools
+  tags:
+    - java
+    - spring
+    - graphql
+  annotations:
+    github.com/project-slug: triplelift-internal/test-code-quality-tools-api
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/code-coverage: enabled
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:default/enterprise-apps
+  providesApis:
+    - 'API:test-code-quality-tools-api-graphql'

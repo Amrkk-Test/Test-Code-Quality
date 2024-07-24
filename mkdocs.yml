@@ -1,0 +1,10 @@
+site_name: test-code-quality-tools-api Documentation
+site_description: Test API to explore code quality tools
+repo_url: https://github.com/triplelift-internal/test-code-quality-tools-api/
+repo_name: GitHub
+
+nav:
+  - Home: index.md
+
+plugins:
+  - techdocs-core

@@ -1,0 +1,238 @@
+plugins {
+	id 'java'
+	id 'java-library'
+	id 'jacoco'
+	id 'org.springframework.boot' version '3.0.12'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'com.github.node-gradle.node' version '3.0.1'
+	id 'io.freefair.lombok' version '6.3.0'
+	id "com.diffplug.spotless" version "6.20.0"
+	id 'com.github.jakemarsden.git-hooks' version '0.0.2'
+	id "com.netflix.dgs.codegen" version "6.0.3"
+	id 'info.solidsoft.pitest' version '1.9.0'
+}
+
+apply plugin: 'info.solidsoft.pitest'
+
+// fetch creds for GitHub Package Registry from ~/.gradle/gradle.properties or environment
+def getGprUser() {
+	return project.findProperty("gpr.user") ?: "x-access-token"
+}
+def getGprKey() {
+	return project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+}
+if (!getGprKey()) {
+	logger.warn("Please configure GitHub Package Registry: https://github.com/triplelift-internal/shared/#connecting-gradle-to-github-packages")
+}
+
+gitHooks {
+	hooks = ['pre-push': 'spotlessCheck']
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		url "https://packages.confluent.io/maven/"
+	}
+	maven {
+		url = uri("https://maven.pkg.github.com/triplelift-internal/shared")
+		credentials {
+			username = getGprUser()
+			password = getGprKey()
+		}
+	}
+}
+
+group = 'com.triplelift.test-code-quality-tools-api'
+// Dockerfile does not handle versioned jars yet, so we explicitly name it without a version
+sourceCompatibility = '19'
+targetCompatibility = '19'
+
+sourceSets {
+	integrationTest {
+		java {
+			compileClasspath += main.output + test.output
+			runtimeClasspath += main.output + test.output
+			srcDir file('src/it/java')
+		}
+		resources.srcDir file('src/it/resources')
+	}
+}
+
+pitest {
+	targetClasses = ['com.triplelift.test_code_quality_tools_api.*']
+	junit5PluginVersion = '1.0.0'
+}
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	cucumberRuntime {
+		extendsFrom testImplementation
+	}
+	all {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
+	integrationTestImplementation {
+		extendsFrom implementation
+	}
+}
+
+spotless {
+	java {
+		targetExclude("build/generated/sources/**/*.java")
+		removeUnusedImports()
+		eclipse().configFile "../gradle/EclipseFormat.xml"
+	}
+	format 'gradle', {
+		target '**/*.gradle'
+		trimTrailingWhitespace()
+		indentWithTabs()
+	}
+
+	format 'misc', {
+		// define the files to apply `misc` to
+		target '*.gradle', '*.md', '.gitignore'
+
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+}
+
+dependencies {
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.security:spring-security-test'
+	implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:8.0.3"))
+	implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:8.0.3'
+	implementation 'com.graphql-java:graphql-java'
+	implementation 'com.graphql-java:graphql-java-extended-scalars'
+	implementation 'com.graphql-java:graphql-java-extended-validation'
+	implementation 'com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure'
+	implementation 'org.ehcache:ehcache:3.8.1'
+	implementation 'io.prometheus:simpleclient_common:0.14.1'
+	implementation 'io.micrometer:micrometer-registry-prometheus:1.10.11'
+	implementation 'io.micrometer:micrometer-core:1.10.11'
+	implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
+	implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
+	runtimeOnly 'com.h2database:h2'
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation 'io.cucumber:cucumber-java:6.10.4'
+	testImplementation 'io.cucumber:cucumber-junit:6.10.4'
+	testImplementation 'io.cucumber:cucumber-spring:6.10.4'
+	testImplementation 'com.h2database:h2'
+	testImplementation 'io.projectreactor:reactor-test:3.4.19'
+
+	integrationTestImplementation('org.springframework.boot:spring-boot-starter-test:2.5.4')
+	integrationTestImplementation 'com.h2database:h2'
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+task jacocoFix(type: Copy) {
+	from "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+	into "$buildDir/reports/jacoco/test/"
+	rename { String fileName ->
+		fileName.replace("jacocoTestReport.xml", "jacocoTestReportFixed.xml")
+	}
+	filter { line -> line.replaceAll("com/", "${project.name}/src/main/java/com/") }
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it , exclude: '/com/triplelift/gen/**/*.class')
+			fileTree(dir: it , exclude:[
+					'/com/triplelift/gen/**/*.class',
+					'**/HealthMetricsConfiguration.class',
+					'**/CustomMetricsInstrumentation.class',
+					'**/Application.class',
+					'**/GraphQLConfig.class',
+					'**/SecurityConfig.class',
+			])
+		}))
+	}
+	dependsOn test // tests are required to run before generating the report
+	finalizedBy jacocoFix
+}
+
+task integrationTest(type: Test) {
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+integrationTest {
+	useJUnitPlatform()
+}
+
+integrationTest {
+	useJUnitPlatform()
+}
+
+task cucumber() {
+	group = "Documentation"
+	description = "Create cucumber.json from Gherkin feature files"
+	dependsOn assemble, compileTestJava
+	inputs.files("src/test/resources/features").skipWhenEmpty()
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			args = ['--plugin', 'pretty','--plugin', 'json:docs/cucumber.json', '--glue', 'com.triplelift.test_code_quality_tools_api', 'src/test/resources/features']
+		}
+	}
+	outputs.file("docs/cucumber.json")
+}
+
+task cukeDoctor() {
+	group = "Documentation"
+	description = "Publish cucumber documentation and test results"
+	inputs.files cucumber
+	doLast {
+		javaexec {
+			main = "-jar"
+			args = ['../tools/cukedoctor-main-3.7.0.jar', '-o', "${project.rootDir}/docs/index", '-p', inputs.files.singleFile,
+					'-f', 'html', '-t', '"TripleLift Test Code Quality Tools API"',  '-toc', '"left"',
+					'-hideScenarioKeyword', '-hideSummarySection'
+			]
+		}
+	}
+	outputs.files("../docs/index.adoc", "../docs/index.html")
+}
+
+bootRun {
+	jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=32323"]
+}
+
+generateJava{
+	schemaPaths = ["${projectDir}/src/main/resources/graphql", "${projectDir}/src/main/resources/*"] // List of directories containing schema files
+	packageName = 'com.triplelift.gen' // The package name to use to generate sources
+	generateClient = true // Enable generating the type safe query API
+	typeMapping = ["BigInteger": "java.math.BigInteger"] // Classes used during code generation.
+}
