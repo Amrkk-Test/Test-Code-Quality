@@ -55,6 +55,7 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
+
   nomad-deploy:
     needs: docker-publish
     name: Nomad Deploy Dev

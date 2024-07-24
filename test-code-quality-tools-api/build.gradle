@@ -10,6 +10,7 @@ plugins {
 	id 'com.github.jakemarsden.git-hooks' version '0.0.2'
 	id "com.netflix.dgs.codegen" version "6.0.3"
 	id 'info.solidsoft.pitest' version '1.9.0'
+	id "org.sonarqube" version "5.0.0.4638"
 }
 
 apply plugin: 'info.solidsoft.pitest'
@@ -27,6 +28,13 @@ if (!getGprKey()) {
 
 gitHooks {
 	hooks = ['pre-push': 'spotlessCheck']
+}
+
+sonar {
+	properties {
+		property "sonar.projectKey", "Test-Code-Quality-tool"
+		property "sonar.projectName", "Test Code Quality tool"
+	}
 }
 
 repositories {

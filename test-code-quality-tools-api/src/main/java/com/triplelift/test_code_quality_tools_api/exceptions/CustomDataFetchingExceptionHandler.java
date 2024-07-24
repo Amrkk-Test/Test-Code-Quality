@@ -26,6 +26,7 @@ public class CustomDataFetchingExceptionHandler implements DataFetcherExceptionH
 		}
 
 		SimpleDataFetcherExceptionHandler defaultHandler = new SimpleDataFetcherExceptionHandler();
+		defaultHandler = new SimpleDataFetcherExceptionHandler();
 		return defaultHandler.handleException(handlerParameters);
 	}
 
