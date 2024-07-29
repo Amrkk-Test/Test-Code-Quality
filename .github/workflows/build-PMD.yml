@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17' # Match your project's JDK version
+          java-version: '17'
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
@@ -31,11 +31,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build and Run PMD
-        run: ./gradlew pmd
+      - name: Build and Run PMD for Main Sources
+        run: ./gradlew pmdMain
 
-      - name: Upload PMD Report
+      - name: Build and Run PMD for Test Sources
+        run: ./gradlew pmdTest
+
+      - name: Build and Run PMD for Integration Test Sources
+        run: ./gradlew pmdIntegrationTest
+
+      - name: Upload PMD Reports
         uses: actions/upload-artifact@v3
         with:
-          name: pmd-report
+          name: pmd-reports
           path: build/reports/pmd
