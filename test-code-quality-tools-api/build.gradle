@@ -59,8 +59,8 @@ repositories {
 
 group = 'com.triplelift.test-code-quality-tools-api'
 // Dockerfile does not handle versioned jars yet, so we explicitly name it without a version
-sourceCompatibility = '19'
-targetCompatibility = '19'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 sourceSets {
 	integrationTest {
