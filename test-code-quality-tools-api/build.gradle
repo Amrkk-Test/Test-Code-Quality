@@ -11,6 +11,8 @@ plugins {
 	id "com.netflix.dgs.codegen" version "6.0.3"
 	id 'info.solidsoft.pitest' version '1.9.0'
 	id "org.sonarqube" version "5.0.0.4638"
+	id "pmd"
+
 }
 
 apply plugin: 'info.solidsoft.pitest'
@@ -194,6 +196,19 @@ jacocoTestReport {
 	}
 	dependsOn test // tests are required to run before generating the report
 	finalizedBy jacocoFix
+}
+pmd {
+	toolVersion = '6.53.0' // Use the latest PMD version
+	ruleSets = [] // Use an empty list if you are specifying a custom ruleset
+	ruleSetFiles = files('config/pmd/ruleset.xml') // Path to your custom ruleset if you have one
+}
+
+// Ensure PMD reports are enabled
+tasks.withType(Pmd) {
+	reports {
+		xml.enabled = true
+		html.enabled = true
+	}
 }
 
 task integrationTest(type: Test) {

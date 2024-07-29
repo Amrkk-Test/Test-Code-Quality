@@ -1,22 +1,41 @@
-name: Build
+name: PMD Analysis
 
 on:
   push:
     branches:
       - main
-
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
-    name: Build and analyze
+  pmd:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '11'
-      - uses: pmd/pmd-github-action@v2
+          java-version: '17' # Match your project's JDK version
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
         with:
-          rulesets: 'ruleset.xml'
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build and Run PMD
+        run: ./gradlew pmd
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pmd-report
+          path: build/reports/pmd
