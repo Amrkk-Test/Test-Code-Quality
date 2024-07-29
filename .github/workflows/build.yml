@@ -35,4 +35,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew sonar -Dsonar.projectKey=Test-Code-Quality -Dsonar.projectName='Test Code Quality' -Dsonar.host.url=https://54fd-2402-e280-3e2f-41e-a82d-245d-5fdc-70b.ngrok-free.app -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
+        run: ./gradlew clean build && ./gradlew sonar -Dsonar.projectKey=Test-Code-Quality -Dsonar.projectName='Test Code Quality' -Dsonar.host.url=https://54fd-2402-e280-3e2f-41e-a82d-245d-5fdc-70b.ngrok-free.app -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
