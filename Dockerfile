@@ -1,6 +1,8 @@
 FROM amazoncorretto:19 AS BUILD_STAGE
 
 ENV APP_HOME=/app/
+ENV SONARQUBE_URL=http://localhost:9000
+
 RUN mkdir -p $APP_HOME/test-code-quality-tools-api/src/main/java
 RUN mkdir -p $APP_HOME/test-code-quality-tools-api/src/main/resources/graphql
 RUN mkdir -p $APP_HOME/newrelic
@@ -24,10 +26,17 @@ COPY newrelic ./newrelic
 
 RUN ./gradlew :test-code-quality-tools-api:build -x :test-code-quality-tools-api:bootJar -x :test-code-quality-tools-api:test --continue
 
-# Now actually copy the source and build, this should reuse previously cached layers
-# on subsequent builds as well as restored .gradle cache.
+RUN yum update -y && yum install -y curl unzip
+
+#RUN curl -sSL -o sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.1.11002-linux.zip && unzip sonar-scanner-cli.zip && mv sonar-scanner-4.7.1.11002-linux /opt/sonar-scanner && rm sonar-scanner-cli.zip
+
 COPY . .
 RUN ./gradlew :test-code-quality-tools-api:build -x :test-code-quality-tools-api:test
+
+
+# Run Sonar analysis
+RUN ./gradlew sonar -Dsonar.projectKey=Test-Code-Quality -Dsonar.projectName='Test Code Quality' -Dsonar.host.url=http://172.17.0.2:9000 -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
+
 
 # Create tiny distroless Java image using only the .jar from the builder
 # For debugging, use a full image:

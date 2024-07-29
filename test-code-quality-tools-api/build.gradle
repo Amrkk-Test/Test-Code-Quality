@@ -34,6 +34,12 @@ sonar {
 	properties {
 		property "sonar.projectKey", "Test-Code-Quality-tool"
 		property "sonar.projectName", "Test Code Quality tool"
+		property "sonar.scm.disabled", "True"
+		property 'sonar.host.url', System.getenv('SONARQUBE_URL') ?: 'http://localhost:9000'
+
+		property "sonar.sources", "src/main/java"
+		property "sonar.tests", "src/test/java"
+		property "sonar.java.binaries", "build/classes/java/main" // Path to your compiled .class files
 	}
 }
 
