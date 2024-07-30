@@ -23,7 +23,10 @@ public class CustomDataFetchingExceptionHandler implements DataFetcherExceptionH
 					.message(handlerParameters.getException().getMessage()).path(handlerParameters.getPath()).build();
 			DataFetcherExceptionHandlerResult result = DataFetcherExceptionHandlerResult.newResult().error(graphqlError)
 					.build();
-			return CompletableFuture.completedFuture(result);
+			CompletableFuture<DataFetcherExceptionHandlerResult> future = CompletableFuture.completedFuture(result);
+			future = CompletableFuture.completedFuture(result);
+
+			return future;
 		}
 
 		SimpleDataFetcherExceptionHandler defaultHandler = new SimpleDataFetcherExceptionHandler();
