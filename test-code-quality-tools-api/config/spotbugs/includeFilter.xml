@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+    <!-- Include specific classes or packages -->
+    <Match>
+        <Class name="com.yourcompany.yourproject.*"/>
+    </Match>
+</FindBugsFilter>
