@@ -240,15 +240,6 @@ task cucumber() {
 	outputs.file("docs/cucumber.json")
 }
 
-spotbugs {
-	toolVersion = '4.8.0' // Use the latest version of SpotBugs
-	sourceSets = [sourceSets.main]
-	effort = 'max' // Options: min, default, max
-	reportLevel = 'high' // Options: low, medium, high
-	includeFilter = file('config/spotbugs/includeFilter.xml')
-	excludeFilter = file('config/spotbugs/excludeFilter.xml')
-}
-
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
 	reports {
 		xml.required.set(true)
