@@ -1,4 +1,4 @@
-name: Build and Test with Gradle
+name: PMD Analysis
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
       - develop
 
 jobs:
-  build:
-    name: Build and Test
+  pmd:
+    name: Run PMD Analysis
     runs-on: ubuntu-latest
 
     steps:
@@ -22,29 +22,32 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'temurin'
+          java-version: '11'  # Set the Java version you need
+          distribution: 'temurin'  # Use the temurin distribution
 
-      - name: Set up Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          gradle-version: '8.2'  # Adjust to your Gradle version
+      - name: Download PMD CLI
+        run: |
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.39.0/pmd-bin-6.39.0.zip
+          unzip pmd-bin-6.39.0.zip
+          chmod +x pmd-bin-6.39.0/bin/pmd
 
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Run PMD
-        run: ./gradlew pmdMain pmdTest
+      - name: Run PMD Analysis
+        run: |
+          ./pmd-bin-6.39.0/bin/pmd \
+            -d src/main/java,src/test/java \
+            -R rulesets/java/basic.xml,rulesets/java/design.xml \
+            -f xml \
+            -r target/pmd.xml
 
       - name: Upload PMD Report
         uses: actions/upload-artifact@v3
         with:
           name: pmd-report
-          path: build/reports/pmd
+          path: target/pmd.xml  # Path to the PMD report file
 
       - name: Check PMD Report
         run: |
-          if find build/reports/pmd -name '*.xml' -exec grep -q 'violations' {} \; then
+          if grep -q "violations" target/pmd.xml; then
             echo "PMD found issues"
             exit 1
           else
