@@ -27,10 +27,11 @@ jobs:
 
       - name: Download PMD CLI
         run: |
-          wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.39.0/pmd-bin-6.39.0.zip
-          unzip pmd-bin-6.39.0.zip
-          ls -al  # List the root directory to check the extracted contents
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.39.0/pmd-bin-6.39.0.zip -O pmd.zip
+          unzip pmd.zip
+          ls -al  # List the root directory to check extracted contents
           ls -al pmd-bin-6.39.0  # List the contents of the PMD bin directory
+          ls -al pmd-bin-6.39.0/bin  # List the contents of the bin directory
 
       - name: Ensure PMD Executable is Present
         run: |
