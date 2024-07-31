@@ -1,0 +1,55 @@
+name: PMD Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  pmd:
+    name: Run PMD Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'  # Set the Java version you need
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Install Maven
+        run: mvn install
+
+      - name: Run PMD
+        run: mvn pmd:pmd
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pmd-report
+          path: target/pmd.xml  # Path to the PMD report file
+
+      - name: Check PMD Report
+        run: |
+          if grep -q "violations" target/pmd.xml; then
+            echo "PMD found issues"
+            exit 1
+          else
+            echo "No PMD issues found"
+          fi
