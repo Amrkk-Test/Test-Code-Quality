@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'  # Set the Java version you need
+          distribution: 'adoptopenjdk'  # Specify the distribution
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
