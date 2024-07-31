@@ -23,16 +23,20 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
+      - name: List Files in Directory
+        run: |
+          ls -al $(pwd)/config/pmd  # Verify the ruleset path
+
       - name: Run PMD Analysis
         uses: pmd/pmd-github-action@v2
         with:
-          rulesets: 'config/pmd/ruleset.xml'  # List of default rulesets
+          rulesets: 'config/pmd/ruleset.xml'  # Ensure this path is correct
 
       - name: Upload PMD Report
         uses: actions/upload-artifact@v3
         with:
           name: pmd-report
-          path: target/pmd.xml  # Adjust the path based on where the report is generated
+          path: target/pmd.xml  # Path to the PMD report file
 
       - name: Check PMD Report
         run: |
