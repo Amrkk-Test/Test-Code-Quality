@@ -36,7 +36,7 @@ jobs:
 
       - name: Ensure PMD Executable is Present
         run: |
-          if [ -f pmd-bin-6.39.0/bin/pmd ]; then
+          if [ -f pmd-bin-6.39.0/bin/pmd.bat ]; then
             echo "PMD executable found."
           else
             echo "PMD executable not found."
