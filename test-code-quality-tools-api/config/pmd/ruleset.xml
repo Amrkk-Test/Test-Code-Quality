@@ -7,4 +7,5 @@
     <description>Custom ruleset for PMD</description>
     <rule ref="rulesets/java/basic.xml"/>
     <rule ref="rulesets/java/design.xml"/>
+    <rule ref="rulesets/java/errorprone.xml"/>
 </ruleset>
