@@ -11,6 +11,7 @@ plugins {
 	id "com.netflix.dgs.codegen" version "6.0.3"
 	id 'info.solidsoft.pitest' version '1.9.0'
 	id "org.sonarqube" version "5.0.0.4638"
+	id "pmd"
 }
 
 apply plugin: 'info.solidsoft.pitest'
@@ -175,6 +176,13 @@ task jacocoFix(type: Copy) {
 		fileName.replace("jacocoTestReport.xml", "jacocoTestReportFixed.xml")
 	}
 	filter { line -> line.replaceAll("com/", "${project.name}/src/main/java/com/") }
+}
+
+pmd {
+	toolVersion = '6.50.0' // Use the version of PMD you're working with
+	ruleSets = ['basic', 'design', 'errorprone'] // Disable the default rulesets
+	sourceSets = [sourceSets.main] // Specify the source sets to analyze
+	// Add your custom ruleset configuration
 }
 
 jacocoTestReport {
