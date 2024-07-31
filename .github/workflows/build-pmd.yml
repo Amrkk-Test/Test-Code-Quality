@@ -17,10 +17,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '11'
-      - uses: pmd/pmd-github-action@v2
+
+      - name: Run PMD Analysis
+        uses: pmd/pmd-github-action@v2
         with:
-          rulesets: 'default'
+          rulesets: 'default'  # Use default rulesets provided by PMD
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pmd-report
+          path: target/pmd.xml  # Adjust the path based on where the report is generated
+
+      - name: Check PMD Report
+        run: |
+          if grep -q "violations" target/pmd.xml; then
+            echo "PMD found issues"
+            exit 1
+          else
+            echo "No PMD issues found"
+          fi
