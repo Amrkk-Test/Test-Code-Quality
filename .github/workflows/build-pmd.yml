@@ -29,10 +29,11 @@ jobs:
         run: |
           wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.39.0/pmd-bin-6.39.0.zip
           unzip pmd-bin-6.39.0.zip
-          chmod +x pmd-bin-6.39.0/bin/pmd
+          ls -al pmd-bin-6.39.0/bin # List files to verify location
 
       - name: Run PMD Analysis
         run: |
+          chmod +x pmd-bin-6.39.0/bin/pmd
           ./pmd-bin-6.39.0/bin/pmd \
             -d src/main/java,src/test/java \
             -R rulesets/java/basic.xml,rulesets/java/design.xml \
