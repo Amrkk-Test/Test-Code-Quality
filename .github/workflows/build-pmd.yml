@@ -1,4 +1,4 @@
-name: PMD Analysis
+name: Build and Test with Gradle
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
       - develop
 
 jobs:
-  pmd:
-    name: Run PMD Analysis
+  build:
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
@@ -22,23 +22,16 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '11'  # Set the Java version you need
-          distribution: 'temurin'  # Use the temurin distribution
-
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          java-version: '11'
+          distribution: 'temurin'
 
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: '8.2'  # Set the Gradle version you need
+          gradle-version: '8.2'  # Adjust to your Gradle version
+
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: Run PMD
         run: ./gradlew pmdMain pmdTest
@@ -47,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: pmd-report
-          path: build/reports/pmd  # Path to the PMD report directory
+          path: build/reports/pmd
 
       - name: Check PMD Report
         run: |
