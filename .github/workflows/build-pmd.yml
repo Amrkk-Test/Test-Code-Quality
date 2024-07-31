@@ -22,3 +22,5 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       - uses: pmd/pmd-github-action@v2
+        with:
+          rulesets: 'default'
