@@ -23,4 +23,4 @@ jobs:
           java-version: '11'
       - uses: pmd/pmd-github-action@v2
         with:
-          rulesets: 'ruleset.xml'
+          rulesets: 'config/pmd/ruleset.xml'
