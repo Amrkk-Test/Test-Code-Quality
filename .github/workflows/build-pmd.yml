@@ -36,7 +36,7 @@ jobs:
 
       - name: Ensure PMD Executable is Present
         run: |
-          if [ -f pmd-bin-6.39.0/bin/pmd.bat ]; then
+          if [ -f pmd-bin-6.39.0/bin/pmd ]; then
             echo "PMD executable found."
           else
             echo "PMD executable not found."
@@ -45,7 +45,24 @@ jobs:
 
       - name: Run PMD Analysis
         run: |
-          chmod +x pmd-bin-6.39.0/bin/pmd.bat
-          ./pmd-bin-6.39.0/bin/pmd.bat \
+          chmod +x pmd-bin-6.39.0/bin/pmd
+          ./pmd-bin-6.39.0/bin/pmd \
             -d src/main/java,src/test/java \
-            -R rulesets/java/basic
+            -R rulesets/java/basic.xml,rulesets/java/design.xml \
+            -f xml \
+            -r target/pmd.xml
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pmd-report
+          path: target/pmd.xml
+
+      - name: Check PMD Report
+        run: |
+          if grep -q "violations" target/pmd.xml; then
+            echo "PMD found issues"
+            exit 1
+          else
+            echo "No PMD issues found"
+          fi
