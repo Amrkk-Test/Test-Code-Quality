@@ -17,10 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: '11' # Specify the JDK version you are using
 
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
@@ -32,3 +32,11 @@ jobs:
 
       - name: Run PMD Analysis
         run: ./gradlew pmdMain
+
+      - name: Upload PMD Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: pmd-reports
+          path: |
+            build/pmd/reports/pmd.xml
+            build/pmd/reports/pmd.html

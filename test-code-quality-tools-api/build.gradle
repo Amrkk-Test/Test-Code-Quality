@@ -184,6 +184,14 @@ pmd {
 	sourceSets = [sourceSets.main] // Specify the source sets to analyze
 	// Add your custom ruleset configuration
 }
+tasks.withType(Pmd) {
+	reports {
+		xml.required.set(true)
+		xml.outputLocation.set(file("${buildDir}/pmd/reports/pmd.xml"))
+		html.required.set(true)
+		html.outputLocation.set(file("${buildDir}/pmd/reports/pmd.html"))
+	}
+}
 
 jacocoTestReport {
 	reports {
