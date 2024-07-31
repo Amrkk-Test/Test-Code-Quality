@@ -26,7 +26,7 @@ jobs:
       - name: Run PMD Analysis
         uses: pmd/pmd-github-action@v2
         with:
-          rulesets: 'default'  # Use default rulesets provided by PMD
+          rulesets: 'rulesets/java/basic.xml,rulesets/java/design.xml,rulesets/java/errorprone.xml'  # List of default rulesets
 
       - name: Upload PMD Report
         uses: actions/upload-artifact@v3
