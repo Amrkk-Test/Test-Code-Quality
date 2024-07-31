@@ -22,14 +22,24 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '11'  # Set the Java version you need
-          distribution: 'temurin'  # Use the temurin distribution
+          java-version: '11'
+          distribution: 'temurin'
 
       - name: Download PMD CLI
         run: |
           wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.39.0/pmd-bin-6.39.0.zip
           unzip pmd-bin-6.39.0.zip
-          ls -al pmd-bin-6.39.0/bin # List files to verify location
+          ls -al  # List the root directory to check the extracted contents
+          ls -al pmd-bin-6.39.0  # List the contents of the PMD bin directory
+
+      - name: Ensure PMD Executable is Present
+        run: |
+          if [ -f pmd-bin-6.39.0/bin/pmd ]; then
+            echo "PMD executable found."
+          else
+            echo "PMD executable not found."
+            exit 1
+          fi
 
       - name: Run PMD Analysis
         run: |
@@ -44,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: pmd-report
-          path: target/pmd.xml  # Path to the PMD report file
+          path: target/pmd.xml
 
       - name: Check PMD Report
         run: |
