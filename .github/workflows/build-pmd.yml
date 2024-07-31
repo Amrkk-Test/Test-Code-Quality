@@ -45,7 +45,7 @@ jobs:
 
       - name: Run PMD Analysis
         run: |
-          chmod +x pmd-bin-6.39.0/bin/pmd
+          chmod +x pmd-bin-6.39.0/bin/pmd.bat
           ./pmd-bin-6.39.0/bin/pmd \
             -d src/main/java,src/test/java \
             -R rulesets/java/basic
