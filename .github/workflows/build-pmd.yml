@@ -25,6 +25,7 @@ jobs:
 
       - name: List Files in Directory
         run: |
+          ls -al $(pwd)
           ls -al $(pwd)/config/pmd  # Verify the ruleset path
 
       - name: Run PMD Analysis
