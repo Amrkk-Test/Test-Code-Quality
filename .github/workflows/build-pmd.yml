@@ -25,30 +25,33 @@ jobs:
           java-version: '11'  # Set the Java version you need
           distribution: 'temurin'  # Use the temurin distribution
 
-      - name: Cache Maven dependencies
+      - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
           path: |
-            ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-gradle-
 
-      - name: Install Maven
-        run: mvn install
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: '8.2'  # Set the Gradle version you need
 
       - name: Run PMD
-        run: mvn pmd:pmd
+        run: ./gradlew pmdMain pmdTest
 
       - name: Upload PMD Report
         uses: actions/upload-artifact@v3
         with:
           name: pmd-report
-          path: target/pmd.xml  # Path to the PMD report file
+          path: build/reports/pmd  # Path to the PMD report directory
 
       - name: Check PMD Report
         run: |
-          if grep -q "violations" target/pmd.xml; then
+          if find build/reports/pmd -name '*.xml' -exec grep -q 'violations' {} \; then
             echo "PMD found issues"
             exit 1
           else
