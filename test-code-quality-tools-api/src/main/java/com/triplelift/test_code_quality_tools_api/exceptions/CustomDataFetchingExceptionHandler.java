@@ -24,6 +24,7 @@ public class CustomDataFetchingExceptionHandler implements DataFetcherExceptionH
 			DataFetcherExceptionHandlerResult result = DataFetcherExceptionHandlerResult.newResult().error(graphqlError)
 					.build();
 			CompletableFuture<DataFetcherExceptionHandlerResult> future = CompletableFuture.completedFuture(result);
+			CompletableFuture<DataFetcherExceptionHandlerResult> future1 = CompletableFuture.completedFuture(result);
 			future = CompletableFuture.completedFuture(result);
 			future = CompletableFuture.completedFuture(result);
 

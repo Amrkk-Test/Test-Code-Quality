@@ -180,17 +180,8 @@ task jacocoFix(type: Copy) {
 
 pmd {
 	toolVersion = '6.50.0' // Use the version of PMD you're working with
-	ruleSets = ['basic', 'design', 'errorprone'] // Disable the default rulesets
-	sourceSets = [sourceSets.main] // Specify the source sets to analyze
 	// Add your custom ruleset configuration
-}
-tasks.withType(Pmd) {
-	reports {
-		xml.required.set(true)
-		xml.outputLocation.set(file("${buildDir}/pmd/reports/pmd.xml"))
-		html.required.set(true)
-		html.outputLocation.set(file("${buildDir}/pmd/reports/pmd.html"))
-	}
+	ruleSetConfig = rootProject.resources.text.fromFile("config/pmd/ruleset.xml")
 }
 
 jacocoTestReport {
