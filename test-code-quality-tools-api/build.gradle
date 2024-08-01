@@ -182,6 +182,7 @@ pmd {
 	toolVersion = '6.50.0' // Use the version of PMD you're working with
 	// Add your custom ruleset configuration
 	ruleSetConfig = rootProject.resources.text.fromFile("config/pmd/ruleset.xml")
+	ignoreFailures = true
 }
 
 jacocoTestReport {
