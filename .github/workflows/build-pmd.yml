@@ -27,9 +27,6 @@ jobs:
         with:
           gradle-version: '7.6' # Specify the Gradle version you are using
 
-      - name: Build with Gradle
-        run: ./gradlew build
-
       - name: Run PMD Analysis
         run: ./gradlew pmdMain
 
