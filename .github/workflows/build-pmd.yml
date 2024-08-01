@@ -25,27 +25,30 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: '7.6' # Specify the Gradle version you are using
+          gradle-version: '7.6'
 
       - name: Run PMD Analysis
-        run: ./gradlew pmdMain || true  # Run PMD and continue even if there are issues
+        run: ./gradlew pmdMain || true
+
+      - name: List Reports Directory
+        run: ls -R build/reports/pmd
 
       - name: Upload PMD Reports
         uses: actions/upload-artifact@v3
         with:
           name: pmd-reports
           path: |
-            build/reports/pmd/main.html
-            build/reports/pmd/test.html
+            build/reports/pmd/main.xml
+            build/reports/pmd/test.xml
 
       - name: Check PMD Report for Issues
         id: check_pmd
         run: |
-          if grep -q "ERROR" build/reports/pmd/main.html; then
+          if grep -q "<error" build/reports/pmd/main.xml; then
             echo "PMD found issues in main source code."
             exit 1
           fi
-          if grep -q "ERROR" build/reports/pmd/test.html; then
+          if grep -q "<error" build/reports/pmd/test.xml; then
             echo "PMD found issues in test source code."
             exit 1
           fi
