@@ -179,10 +179,16 @@ task jacocoFix(type: Copy) {
 }
 
 pmd {
-	toolVersion = '6.50.0' // Use the version of PMD you're working with
-	// Add your custom ruleset configuration
+	toolVersion = '6.50.0'
 	ruleSetConfig = rootProject.resources.text.fromFile("config/pmd/ruleset.xml")
 	ignoreFailures = true
+}
+
+task printPmdReportLocation {
+	doLast {
+		println "PMD main report: ${buildDir}/reports/pmd/main.html"
+		println "PMD test report: ${buildDir}/reports/pmd/test.html"
+	}
 }
 
 jacocoTestReport {
