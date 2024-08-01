@@ -30,6 +30,9 @@ jobs:
       - name: Run PMD Analysis
         run: ./gradlew pmdMain || true
 
+      - name: List Reports Directory After PMD Analysis
+        run: ls -R test-code-quality-tools-api/build/reports/pmd
+
       - name: Upload PMD Reports
         uses: actions/upload-artifact@v3
         with:
@@ -37,6 +40,9 @@ jobs:
           path: |
             test-code-quality-tools-api/build/reports/pmd/main.xml
             test-code-quality-tools-api/build/reports/pmd/test.xml
+
+      - name: List Reports Directory Before PMD Check
+        run: ls -R test-code-quality-tools-api/build/reports/pmd
 
       - name: Check PMD Report for Issues
         id: check_pmd
