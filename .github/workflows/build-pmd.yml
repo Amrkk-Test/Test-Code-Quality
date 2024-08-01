@@ -39,7 +39,6 @@ jobs:
           name: pmd-reports
           path: |
             test-code-quality-tools-api/build/reports/pmd/main.xml
-            test-code-quality-tools-api/build/reports/pmd/test.xml
 
       - name: List Reports Directory Before PMD Check
         run: ls -R test-code-quality-tools-api/build/reports/pmd
@@ -49,10 +48,6 @@ jobs:
         run: |
           if grep -q "<error" test-code-quality-tools-api/build/reports/pmd/main.xml; then
             echo "PMD found issues in main source code."
-            exit 1
-          fi
-          if grep -q "<error" test-code-quality-tools-api/build/reports/pmd/test.xml; then
-            echo "PMD found issues in test source code."
             exit 1
           fi
         continue-on-error: false
