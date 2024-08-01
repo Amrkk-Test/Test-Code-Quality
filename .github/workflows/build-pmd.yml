@@ -46,7 +46,7 @@ jobs:
       - name: Check PMD Report for Issues
         id: check_pmd
         run: |
-          if grep -q "<error" test-code-quality-tools-api/build/reports/pmd/main.xml; then
+          if grep -q "<violation" test-code-quality-tools-api/build/reports/pmd/main.xml; then
             echo "PMD found issues in main source code."
             exit 1
           fi
