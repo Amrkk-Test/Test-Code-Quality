@@ -12,6 +12,7 @@ plugins {
 	id 'info.solidsoft.pitest' version '1.9.0'
 	id "org.sonarqube" version "5.0.0.4638"
 	id "pmd"
+	id 'com.github.spotbugs' version '5.1.10' // Use the latest version available
 }
 
 apply plugin: 'info.solidsoft.pitest'
@@ -176,6 +177,23 @@ task jacocoFix(type: Copy) {
 		fileName.replace("jacocoTestReport.xml", "jacocoTestReportFixed.xml")
 	}
 	filter { line -> line.replaceAll("com/", "${project.name}/src/main/java/com/") }
+}
+
+spotbugs {
+	toolVersion = '4.6.0' // Use the latest version available
+	effort = 'max'
+	reportLevel = 'high'
+	reports {
+		xml.enabled = true
+		html.enabled = true
+	}
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+	}
 }
 
 pmd {
