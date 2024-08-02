@@ -37,7 +37,7 @@ sonar {
 		property "sonar.projectKey", "Test-Code-Quality-tool"
 		property "sonar.projectName", "Test Code Quality tool"
 		property "sonar.scm.disabled", "True"
-		property 'sonar.host.url', System.getenv('SONARQUBE_URL') ?: 'http://172.17.0.2:9000'
+		property 'sonar.host.url', System.getenv('SONARQUBE_URL') ?: 'https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app'
 
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
