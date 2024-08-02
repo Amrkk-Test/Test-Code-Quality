@@ -1,4 +1,4 @@
-name: Java CI with Gradle and PMD
+name: Java CI with Gradle and Spot Bug
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build and PMD Analysis
+    name: Build and Spot Bug Analysis
     runs-on: ubuntu-latest
 
     steps:
@@ -27,5 +27,5 @@ jobs:
         with:
           gradle-version: '7.6'
 
-      - name: Run PMD Analysis
+      - name: Run Spot Bug Analysis
         run: ./gradlew spotbugsMain
