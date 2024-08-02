@@ -12,7 +12,7 @@ plugins {
 	id 'info.solidsoft.pitest' version '1.9.0'
 	id "org.sonarqube" version "5.0.0.4638"
 	id "pmd"
-	id 'com.github.spotbugs' version '5.0.13' // Use the latest version available
+	id 'com.github.spotbugs' version "5.0.13"
 }
 
 apply plugin: 'info.solidsoft.pitest'
@@ -179,23 +179,25 @@ task jacocoFix(type: Copy) {
 	filter { line -> line.replaceAll("com/", "${project.name}/src/main/java/com/") }
 }
 
-subprojects {
-	apply plugin: 'java'
-	// this is the most important part, applying the plugin to the subprojects,
-	// too:
-	apply plugin: 'com.github.spotbugs'
-
-	spotbugs {
-		toolVersion = '5.0.13'
-	}
-
-
+spotbugs {
+	ignoreFailures = true
+	showStackTraces = true
+	showProgress = true
+	maxHeapSize = "1g"
 }
+
+
 
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
 	reports {
-		xml.enabled = false
-		html.enabled = true
+		html {
+			required.set(true)
+			outputLocation.set(file("$buildDir/reports/spotbugs/spotbugs.html"))
+		}
+		xml {
+			required.set(true)
+			outputLocation.set(file("$buildDir/reports/spotbugs/spotbugs.xml"))
+		}
 	}
 }
 

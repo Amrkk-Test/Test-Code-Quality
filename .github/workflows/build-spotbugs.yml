@@ -29,3 +29,9 @@ jobs:
 
       - name: Run Spot Bug Analysis
         run: ./gradlew spotbugsMain
+
+      - name: Upload SpotBugs reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: spotbugs-reports
+          path: test-code-quality-tools-api/build/reports/spotbugs
