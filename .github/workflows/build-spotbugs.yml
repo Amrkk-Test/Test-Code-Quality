@@ -35,3 +35,12 @@ jobs:
         with:
           name: spotbugs-reports
           path: test-code-quality-tools-api/build/reports/spotbugs
+
+      - name: Check Spot Bug Report for Issues
+        id: check_spotbug
+        run: |
+          if grep -q "<BugInstance" test-code-quality-tools-api/build/reports/spotbugs/spotbugs.xml; then
+            echo "SpotBug found issues in main source code."
+            exit 1
+          fi
+        continue-on-error: false
