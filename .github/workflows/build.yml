@@ -1,4 +1,4 @@
-name: Build and Analyze
+name: Sonar Analyze
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build and Analyze
+    name: Sonar Analyze
     runs-on: ubuntu-latest
 
     steps:
@@ -48,8 +48,7 @@ jobs:
             -Dsonar.projectKey=Test-Code-Quality \
             -Dsonar.projectName='Test Code Quality' \
             -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.branch.name=${{ github.head_ref }}
+            -Dsonar.login=$SONAR_TOKEN 
 
       - name: Checkout main branch
         run: git fetch origin main
