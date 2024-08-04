@@ -43,7 +43,7 @@ sonar {
 		property "sonar.tests", "src/test/java"
 		property "sonar.java.binaries", "build/classes/java/main" // Path to your compiled .class files
 
-		property "sonar.qualitygate.wait", "True"
+		property "sonar.qualitygate.wait", "False"
 
 	}
 }

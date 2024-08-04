@@ -125,3 +125,17 @@ jobs:
             });
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Quality Gate Status
+        id: quality_gate_status
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          # Polling SonarQube for quality gate status
+          QUALITY_GATE_STATUS_URL="$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=Test-Code-Quality"
+          STATUS=$(curl -s -u $SONAR_TOKEN: "$QUALITY_GATE_STATUS_URL" | jq -r '.projectStatus.status')
+          echo "Quality gate status: $STATUS"
+          echo "QUALITY_GATE_STATUS=$STATUS" >> $GITHUB_ENV
+          if [ "$STATUS" != "OK" ]; then
+            exit 1
+          fi
