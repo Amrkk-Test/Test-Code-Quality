@@ -47,8 +47,8 @@ jobs:
           ./gradlew sonar \
             -Dsonar.projectKey=Test-Code-Quality \
             -Dsonar.projectName='Test Code Quality' \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN 
+            -Dsonar.host.url=https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app \
+            -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
 
       - name: Checkout main branch
         run: git fetch origin main
@@ -63,9 +63,8 @@ jobs:
           ./gradlew sonar \
             -Dsonar.projectKey=Test-Code-Quality \
             -Dsonar.projectName='Test Code Quality' \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.branch.name=main
+            -Dsonar.host.url=https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app \
+            -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
 
       - name: Fetch SonarQube Issues for Current Branch
         id: fetch_current_branch_issues
