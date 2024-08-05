@@ -21,9 +21,11 @@ apply plugin: 'info.solidsoft.pitest'
 def getGprUser() {
 	return project.findProperty("gpr.user") ?: "x-access-token"
 }
+
 def getGprKey() {
 	return project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
 }
+
 if (!getGprKey()) {
 	logger.warn("Please configure GitHub Package Registry: https://github.com/triplelift-internal/shared/#connecting-gradle-to-github-packages")
 }
@@ -231,8 +233,8 @@ jacocoTestReport {
 	}
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it , exclude: '/com/triplelift/gen/**/*.class')
-			fileTree(dir: it , exclude: [
+			fileTree(dir: it, exclude: '/com/triplelift/gen/**/*.class')
+			fileTree(dir: it, exclude: [
 					'/com/triplelift/gen/**/*.class',
 					'**/HealthMetricsConfiguration.class',
 					'**/CustomMetricsInstrumentation.class',
@@ -300,4 +302,3 @@ generateJava {
 		}
 	}
 }
-
