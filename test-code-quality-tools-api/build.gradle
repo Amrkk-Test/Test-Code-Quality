@@ -288,8 +288,16 @@ bootRun {
 }
 
 generateJava {
-	schemaPaths = ["${projectDir}/src/main/resources/graphql", "${projectDir}/src/main/resources/*"] // List of directories containing schema files
-	packageName = 'com.triplelift.gen' // The package name to use to generate sources
-	generateClient = true // Enable generating the type safe query API
-	typeMapping = ["BigInteger": "java.math.BigInteger"] // Classes used during code generation.
+	schemaPaths = ["${projectDir}/src/main/resources/graphql", "${projectDir}/src/main/resources/*"]
+	packageName = 'com.triplelift.gen'
+	generateClient = true
+	typeMapping = ["BigInteger": "java.math.BigInteger"]
+
+	// Adding duplicatesStrategy if this task involves file copying
+	doFirst {
+		tasks.withType(Copy) {
+			duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+		}
+	}
 }
+
