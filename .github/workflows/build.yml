@@ -70,8 +70,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          curl -s -u $SONAR_TOKEN: \
-            "$SONAR_HOST_URL/api/issues/search?projectKeys=Test-Code-Quality&branch=${{ github.head_ref }}&statuses=OPEN" \
+          curl -s -u sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180: \
+            "https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app/api/issues/search?projectKeys=Test-Code-Quality&branch=${{ github.head_ref }}&statuses=OPEN" \
             -o current_branch_issues.json
 
       - name: Fetch SonarQube Issues for Main Branch
@@ -79,8 +79,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          curl -s -u $SONAR_TOKEN: \
-            "$SONAR_HOST_URL/api/issues/search?projectKeys=Test-Code-Quality&branch=main&statuses=OPEN" \
+          curl -s -u sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180: \
+            "https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app/api/issues/search?projectKeys=Test-Code-Quality&branch=main&statuses=OPEN" \
             -o main_branch_issues.json
 
       - name: Compare Issues and Post PR Comments
