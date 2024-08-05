@@ -17,7 +17,7 @@ plugins {
 
 apply plugin: 'info.solidsoft.pitest'
 
-// fetch creds for GitHub Package Registry from ~/.gradle/gradle.properties or environment
+// Fetch creds for GitHub Package Registry from ~/.gradle/gradle.properties or environment
 def getGprUser() {
 	return project.findProperty("gpr.user") ?: "x-access-token"
 }
@@ -38,13 +38,10 @@ sonar {
 		property "sonar.projectName", "Test Code Quality tool"
 		property "sonar.scm.disabled", "True"
 		property 'sonar.host.url', System.getenv('SONARQUBE_URL') ?: 'https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app'
-
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
 		property "sonar.java.binaries", "build/classes/java/main" // Path to your compiled .class files
-
 		property "sonar.qualitygate.wait", "False"
-
 	}
 }
 
@@ -68,13 +65,31 @@ sourceCompatibility = '17'
 targetCompatibility = '17'
 
 sourceSets {
+	main {
+		java {
+			srcDir 'src/main/java'
+		}
+		resources {
+			srcDir 'src/main/resources'
+		}
+	}
+	test {
+		java {
+			srcDir 'src/test/java'
+		}
+		resources {
+			srcDir 'src/test/resources'
+		}
+	}
 	integrationTest {
 		java {
-			compileClasspath += main.output + test.output
-			runtimeClasspath += main.output + test.output
-			srcDir file('src/it/java')
+			compileClasspath += sourceSets.main.output + sourceSets.test.output
+			runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+			srcDir 'src/it/java'
 		}
-		resources.srcDir file('src/it/resources')
+		resources {
+			srcDir 'src/it/resources'
+		}
 	}
 }
 
@@ -113,11 +128,8 @@ spotless {
 		trimTrailingWhitespace()
 		indentWithTabs()
 	}
-
 	format 'misc', {
-		// define the files to apply `misc` to
 		target '*.gradle', '*.md', '.gitignore'
-
 		trimTrailingWhitespace()
 		indentWithTabs()
 		endWithNewline()
@@ -170,6 +182,7 @@ test {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport // report is always generated after tests run
 }
+
 task jacocoFix(type: Copy) {
 	from "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 	into "$buildDir/reports/jacoco/test/"
@@ -185,8 +198,6 @@ spotbugs {
 	showProgress = true
 	maxHeapSize = "1g"
 }
-
-
 
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
 	reports {
@@ -220,8 +231,8 @@ jacocoTestReport {
 	}
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it , exclude: '/com/triplelift/gen/**/*.class')
-			fileTree(dir: it , exclude:[
+			fileTree(dir: it, exclude: '/com/triplelift/gen/**/*.class')
+			fileTree(dir: it, exclude: [
 					'/com/triplelift/gen/**/*.class',
 					'**/HealthMetricsConfiguration.class',
 					'**/CustomMetricsInstrumentation.class',
@@ -231,61 +242,5 @@ jacocoTestReport {
 			])
 		}))
 	}
-	dependsOn test // tests are required to run before generating the report
-	finalizedBy jacocoFix
-}
-
-task integrationTest(type: Test) {
-	testClassesDirs = sourceSets.integrationTest.output.classesDirs
-	classpath = sourceSets.integrationTest.runtimeClasspath
-}
-
-integrationTest {
-	useJUnitPlatform()
-}
-
-integrationTest {
-	useJUnitPlatform()
-}
-
-task cucumber() {
-	group = "Documentation"
-	description = "Create cucumber.json from Gherkin feature files"
-	dependsOn assemble, compileTestJava
-	inputs.files("src/test/resources/features").skipWhenEmpty()
-	doLast {
-		javaexec {
-			main = "io.cucumber.core.cli.Main"
-			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-			args = ['--plugin', 'pretty','--plugin', 'json:docs/cucumber.json', '--glue', 'com.triplelift.test_code_quality_tools_api', 'src/test/resources/features']
-		}
-	}
-	outputs.file("docs/cucumber.json")
-}
-
-task cukeDoctor() {
-	group = "Documentation"
-	description = "Publish cucumber documentation and test results"
-	inputs.files cucumber
-	doLast {
-		javaexec {
-			main = "-jar"
-			args = ['../tools/cukedoctor-main-3.7.0.jar', '-o', "${project.rootDir}/docs/index", '-p', inputs.files.singleFile,
-					'-f', 'html', '-t', '"TripleLift Test Code Quality Tools API"',  '-toc', '"left"',
-					'-hideScenarioKeyword', '-hideSummarySection'
-			]
-		}
-	}
-	outputs.files("../docs/index.adoc", "../docs/index.html")
-}
-
-bootRun {
-	jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=32323"]
-}
-
-generateJava{
-	schemaPaths = ["${projectDir}/src/main/resources/graphql", "${projectDir}/src/main/resources/*"] // List of directories containing schema files
-	packageName = 'com.triplelift.gen' // The package name to use to generate sources
-	generateClient = true // Enable generating the type safe query API
-	typeMapping = ["BigInteger": "java.math.BigInteger"] // Classes used during code generation.
+	dependsOn test //
 }
