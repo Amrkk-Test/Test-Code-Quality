@@ -1,4 +1,4 @@
-name: Build
+name: Build With SonarQube
 
 on:
   push:
