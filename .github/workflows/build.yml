@@ -48,7 +48,7 @@ jobs:
             -Dsonar.projectKey=Test-Code-Quality \
             -Dsonar.projectName='Test Code Quality' \
             -Dsonar.host.url=https://a92d-2402-e280-3e2f-41e-89b6-1b15-1e15-4089.ngrok-free.app \
-            -Dsonar.login=squ_c25529979ca49f8185910b8af6230bc9610ec91b
+            -Dsonar.login=sqp_ca25259f3a970de5adc6c3500d4ed82f4e5b9c0d
 
       - name: Check Quality Gate Status
         id: quality_gate_status
@@ -57,7 +57,7 @@ jobs:
         run: |
           # Polling SonarQube for quality gate status
           QUALITY_GATE_STATUS_URL="https://a92d-2402-e280-3e2f-41e-89b6-1b15-1e15-4089.ngrok-free.app/api/qualitygates/project_status?projectKey=Test-Code-Quality"
-          STATUS=$(curl -s -u squ_c25529979ca49f8185910b8af6230bc9610ec91b: "$QUALITY_GATE_STATUS_URL" | jq -r '.projectStatus.status')
+          STATUS=$(curl -s -u sqp_ca25259f3a970de5adc6c3500d4ed82f4e5b9c0d: "$QUALITY_GATE_STATUS_URL" | jq -r '.projectStatus.status')
           echo "Quality gate status: $STATUS"
           if [ "$STATUS" != "OK" ]; then
             exit 1
