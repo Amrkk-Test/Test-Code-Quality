@@ -40,22 +40,24 @@ jobs:
 
       - name: Build and Analyze on Current Branch
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Ensure this secret is set in your GitHub repository
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # Ensure this secret is set in your GitHub repository
         run: |
           ./gradlew clean build
-          ./gradlew sonar \
+          ./gradlew sonarqube \
             -Dsonar.projectKey=Test-Code-Quality \
-            -Dsonar.projectName='Test Code Quality'
+            -Dsonar.projectName='Test Code Quality' \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN
 
       - name: Check Quality Gate Status
         id: quality_gate_status
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Ensure this secret is set in your GitHub repository
         run: |
           # Polling SonarQube for quality gate status
-          QUALITY_GATE_STATUS_URL="https://a92d-2402-e280-3e2f-41e-89b6-1b15-1e15-4089.ngrok-free.app/api/qualitygates/project_status?projectKey=Test-Code-Quality"
-          STATUS=$(curl -s -u sqp_ca25259f3a970de5adc6c3500d4ed82f4e5b9c0d: "$QUALITY_GATE_STATUS_URL" | jq -r '.projectStatus.status')
+          QUALITY_GATE_STATUS_URL="${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=Test-Code-Quality"
+          STATUS=$(curl -s -u $SONAR_TOKEN: "$QUALITY_GATE_STATUS_URL" | jq -r '.projectStatus.status')
           echo "Quality gate status: $STATUS"
           if [ "$STATUS" != "OK" ]; then
             exit 1
