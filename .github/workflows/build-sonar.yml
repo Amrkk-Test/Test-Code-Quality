@@ -36,4 +36,10 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew build sonar --info
+        run: |
+          ./gradlew clean build
+          ./gradlew sonar \
+            -Dsonar.projectKey=Test-Code-Quality \
+            -Dsonar.projectName='Test Code Quality' \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
