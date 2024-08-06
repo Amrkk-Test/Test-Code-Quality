@@ -11,8 +11,6 @@ plugins {
 	id "com.netflix.dgs.codegen" version "6.0.3"
 	id 'info.solidsoft.pitest' version '1.9.0'
 	id "org.sonarqube" version "5.0.0.4638"
-	id "pmd"
-	id 'com.github.spotbugs' version "5.0.13"
 }
 
 apply plugin: 'info.solidsoft.pitest'
@@ -176,39 +174,6 @@ task jacocoFix(type: Copy) {
 		fileName.replace("jacocoTestReport.xml", "jacocoTestReportFixed.xml")
 	}
 	filter { line -> line.replaceAll("com/", "${project.name}/src/main/java/com/") }
-}
-
-spotbugs {
-	ignoreFailures = true
-	showStackTraces = true
-	showProgress = true
-	maxHeapSize = "1g"
-}
-
-tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
-	reports {
-		html {
-			required.set(true)
-			outputLocation.set(file("$buildDir/reports/spotbugs/spotbugs.html"))
-		}
-		xml {
-			required.set(true)
-			outputLocation.set(file("$buildDir/reports/spotbugs/spotbugs.xml"))
-		}
-	}
-}
-
-pmd {
-	toolVersion = '6.50.0'
-	ruleSetConfig = rootProject.resources.text.fromFile("config/pmd/ruleset.xml")
-	ignoreFailures = true
-}
-
-task printPmdReportLocation {
-	doLast {
-		println "PMD main report: ${buildDir}/reports/pmd/main.html"
-		println "PMD test report: ${buildDir}/reports/pmd/test.html"
-	}
 }
 
 jacocoTestReport {
