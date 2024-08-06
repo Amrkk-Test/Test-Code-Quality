@@ -38,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Build and Analyze on Dev Branch
+      - name: Build and Analyze on Current Branch
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Ensure this secret is set in your GitHub repository
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # Ensure this secret is set in your GitHub repository
