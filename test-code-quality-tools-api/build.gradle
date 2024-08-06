@@ -36,7 +36,7 @@ gitHooks {
 
 sonar {
 	properties {
-		property "sonar.projectKey", "akulkarni32_Test-Code-Quality_8c244cbe-25e1-4c8f-88bd-67b9f2c2a94e"
+		property "sonar.projectKey", "Amrkk-Test_Test-Code-Quality_9a2ce0b6-f1f1-4684-acc0-49a84bae88ea"
 		property "sonar.projectName", "Test-Code-Quality"
 	}
 }
