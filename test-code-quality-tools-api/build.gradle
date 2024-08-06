@@ -36,15 +36,8 @@ gitHooks {
 
 sonar {
 	properties {
-		property "sonar.projectKey", "Test-Code-Quality-tool"
-		property "sonar.projectName", "Test Code Quality tool"
-		property "sonar.scm.disabled", "True"
-		property "sonar.login", "sqp_ca25259f3a970de5adc6c3500d4ed82f4e5b9c0d"
-		property 'sonar.host.url', System.getenv('SONARQUBE_URL') ?: 'https://a92d-2402-e280-3e2f-41e-89b6-1b15-1e15-4089.ngrok-free.app'
-		property "sonar.sources", "src/main/java"
-		property "sonar.tests", "src/test/java"
-		property "sonar.java.binaries", "build/classes/java/main" // Path to your compiled .class files
-		property "sonar.qualitygate.wait", "False"
+		property "sonar.projectKey", "akulkarni32_Test-Code-Quality_8c244cbe-25e1-4c8f-88bd-67b9f2c2a94e"
+		property "sonar.projectName", "Test-Code-Quality"
 	}
 }
 
