@@ -27,6 +27,7 @@ public class CustomDataFetchingExceptionHandler implements DataFetcherExceptionH
 			CompletableFuture<DataFetcherExceptionHandlerResult> future1 = CompletableFuture.completedFuture(result);
 			future = CompletableFuture.completedFuture(result);
 			future = CompletableFuture.completedFuture(result);
+			future = CompletableFuture.completedFuture(result);
 
 			return future;
 		}
