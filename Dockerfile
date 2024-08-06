@@ -35,7 +35,7 @@ RUN ./gradlew :test-code-quality-tools-api:build -x :test-code-quality-tools-api
 
 
 # Run Sonar analysis
-RUN ./gradlew sonar -Dsonar.projectKey=Test-Code-Quality -Dsonar.projectName='Test Code Quality' -Dsonar.host.url=http://172.17.0.2:9000 -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
+RUN ./gradlew sonar -Dsonar.projectKey=Test-Code-Quality -Dsonar.projectName='Test Code Quality' -Dsonar.host.url=http://172.17.0.2:9000 -Dsonar.login=squ_c25529979ca49f8185910b8af6230bc9610ec91b
 
 
 # Create tiny distroless Java image using only the .jar from the builder

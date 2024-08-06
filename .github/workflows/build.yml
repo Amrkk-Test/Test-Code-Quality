@@ -47,83 +47,8 @@ jobs:
           ./gradlew sonar \
             -Dsonar.projectKey=Test-Code-Quality \
             -Dsonar.projectName='Test Code Quality' \
-            -Dsonar.host.url=https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app \
-            -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
-
-      - name: Checkout main branch
-        run: git fetch origin main
-
-      - name: Run SonarQube Analysis on Main Branch
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          ./gradlew clean build
-          ./gradlew sonar \
-            -Dsonar.projectKey=Test-Code-Quality \
-            -Dsonar.projectName='Test Code Quality' \
-            -Dsonar.host.url=https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app \
-            -Dsonar.login=sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180
-
-      - name: Fetch SonarQube Issues for Current Branch
-        id: fetch_current_branch_issues
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          curl -s -u sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180: \
-            "https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app/api/issues/search?projectKeys=Test-Code-Quality&branch=${{ github.head_ref }}&statuses=OPEN" \
-            -o current_branch_issues.json
-
-      - name: Fetch SonarQube Issues for Main Branch
-        id: fetch_main_branch_issues
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          curl -s -u sqp_8f5a4f96ebb931616aaf014f5bebe772f7c84180: \
-            "https://5f7e-2402-e280-3e2f-41e-29bf-d513-fee5-9d2f.ngrok-free.app/api/issues/search?projectKeys=Test-Code-Quality&branch=main&statuses=OPEN" \
-            -o main_branch_issues.json
-
-      - name: Compare Issues and Post PR Comments
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const currentIssues = JSON.parse(fs.readFileSync('current_branch_issues.json'));
-            const mainIssues = JSON.parse(fs.readFileSync('main_branch_issues.json'));
-            const prNumber = process.env.GITHUB_REF.split('/')[2];
-            
-            const currentIssuesMap = new Map();
-            currentIssues.issues.forEach(issue => {
-              currentIssuesMap.set(issue.key, issue);
-            });
-            
-            const mainIssuesMap = new Map();
-            mainIssues.issues.forEach(issue => {
-              mainIssuesMap.set(issue.key, issue);
-            });
-            
-            let commentBody = `### SonarQube Issues in Current Branch Only\n\n`;
-            let foundIssues = false;
-            
-            currentIssues.issues.forEach(issue => {
-              if (!mainIssuesMap.has(issue.key)) {
-                commentBody += `- [${issue.rule}](${issue.url}): ${issue.message}\n`;
-                foundIssues = true;
-              }
-            });
-            
-            if (!foundIssues) {
-              commentBody = "No new SonarQube issues found in the current branch.";
-            }
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: commentBody
-            });
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            -Dsonar.host.url=https://a92d-2402-e280-3e2f-41e-89b6-1b15-1e15-4089.ngrok-free.app \
+            -Dsonar.login=squ_c25529979ca49f8185910b8af6230bc9610ec91b
 
       - name: Check Quality Gate Status
         id: quality_gate_status
@@ -131,10 +56,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           # Polling SonarQube for quality gate status
-          QUALITY_GATE_STATUS_URL="$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=Test-Code-Quality"
-          STATUS=$(curl -s -u $SONAR_TOKEN: "$QUALITY_GATE_STATUS_URL" | jq -r '.projectStatus.status')
+          QUALITY_GATE_STATUS_URL="https://a92d-2402-e280-3e2f-41e-89b6-1b15-1e15-4089.ngrok-free.app/api/qualitygates/project_status?projectKey=Test-Code-Quality"
+          STATUS=$(curl -s -u squ_c25529979ca49f8185910b8af6230bc9610ec91b: "$QUALITY_GATE_STATUS_URL" | jq -r '.projectStatus.status')
           echo "Quality gate status: $STATUS"
-          echo "QUALITY_GATE_STATUS=$STATUS" >> $GITHUB_ENV
           if [ "$STATUS" != "OK" ]; then
             exit 1
           fi
