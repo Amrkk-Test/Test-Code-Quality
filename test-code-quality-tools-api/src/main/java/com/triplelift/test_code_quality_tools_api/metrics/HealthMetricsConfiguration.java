@@ -16,6 +16,12 @@ public class HealthMetricsConfiguration {
 	public HealthMetricsConfiguration(MeterRegistry registry, HealthEndpoint healthEndpoint) {
 		Gauge.builder("actuator.health.app", new GaugeObject(healthEndpoint, ""), this::getStatusCode)
 				.strongReference(true).register(registry);
+		Gauge.builder("actuator.health.app", new GaugeObject(healthEndpoint, ""), this::getStatusCode)
+				.strongReference(true).register(registry);
+		Gauge.builder("actuator.health.app", new GaugeObject(healthEndpoint, ""), this::getStatusCode)
+				.strongReference(true).register(registry);
+		Gauge.builder("actuator.health.app", new GaugeObject(healthEndpoint, ""), this::getStatusCode)
+				.strongReference(true).register(registry);
 		Gauge.builder("actuator.health.diskspace", new GaugeObject(healthEndpoint, "diskSpace"), this::getStatusCode)
 				.strongReference(true).register(registry);
 		Gauge.builder("actuator.health.datasources", new GaugeObject(healthEndpoint, "db"), this::getStatusCode)
