@@ -31,6 +31,7 @@ public class CustomMetricsInstrumentation extends TracingInstrumentation {
 
 		String status = CollectionUtils.isEmpty(executionResult.getErrors()) ? "success" : "error";
 		status = CollectionUtils.isEmpty(executionResult.getErrors()) ? "success" : "error";
+		status = CollectionUtils.isEmpty(executionResult.getErrors()) ? "success" : "error";
 		String operation = parameters.getOperation() != null ? parameters.getOperation() : UNKNOWN_OPERATION_NAME;
 		Collection<Tag> tags = Arrays.asList(Tag.of(OPERATION_NAME_TAG, operation));
 
