@@ -36,6 +36,13 @@ sonar {
 	properties {
 		property "sonar.projectKey", "Amrkk-Test_Test-Code-Quality_9a2ce0b6-f1f1-4684-acc0-49a84bae88ea"
 		property "sonar.projectName", "Test-Code-Quality"
+		property "sonar.scm.disabled", "True"
+		property 'sonar.host.url', System.getenv('SONARQUBE_URL') ?: 'https://a92d-2402-e280-3e2f-41e-89b6-1b15-1e15-4089.ngrok-free.app/'
+
+		property "sonar.sources", "src/main/java"
+		property "sonar.tests", "src/test/java"
+		property "sonar.java.binaries", "build/classes/java/main" // Path to your compiled .class files
+
 	}
 }
 
