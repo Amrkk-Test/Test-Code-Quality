@@ -39,7 +39,7 @@ jobs:
         run: |
           ./gradlew clean build
           ./gradlew sonar \
-            -Dsonar.projectKey=Test-Code-Quality \
+            -Dsonar.projectKey=Amrkk-Test_Test-Code-Quality_9a2ce0b6-f1f1-4684-acc0-49a84bae88ea \
             -Dsonar.projectName='Test Code Quality' \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
